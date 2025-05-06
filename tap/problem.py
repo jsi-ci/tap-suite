@@ -1,0 +1,299 @@
+import math
+import numpy as np
+
+from tap.solution import Solution
+
+
+class TunnelAlignmentProblem:
+    """ Class representing the tunnel alignment problem. """
+    def __init__(self, problem_json, variant):
+        """ Initializes the problem from the given problem json file and the given
+        variant. It can be in short string form: one of "AFV", "AFO", "AAV", "AAO", "CV" or "CO",
+        or in dict form: {
+            "points": "points_and_angles" or "factors",
+            "angles": "factor" or "absolute",
+            "order": "by_variables" or "by_order",
+        }. """
+        self.problem_name = problem_json["problem_name"]
+        self.max_horizontal_turns = problem_json["max_horizontal_turns"]
+        self.max_vertical_turns = problem_json["max_vertical_turns"]
+        self.basic_material_cost = problem_json["basic_material_cost"]
+        # calculate the maximum gradient in degrees from the constraint in percentage
+        self.max_gradient_degrees = math.atan(problem_json["max_gradient"]) * 180 / math.pi
+        self.penalty = problem_json["penalty"]
+        self.max_out_of_bounds_control_point_factor = 1.5
+        self.min_dist = 5
+
+        # read the nadir and ideal points from the json file for convergence calculation
+        self.nadir = problem_json["nadir"]
+        self.ideal = problem_json["ideal"]
+
+        # read the data about the objectives, constraints and hard constraints from the json file
+        # objective and constraint values are calculated from the evaluation tree
+        self.evaluation_tree = problem_json["evaluation_tree"]
+        self.objectives = problem_json["objectives"]
+        self.constraints = problem_json["constraints"]
+        self.hard_constraints = problem_json["hard_constraints"]
+
+        # read the data about the points from the json file
+        self.num_given_points = len(problem_json["points"]["given_points"])
+        self.start_point = problem_json["points"]["start_point"]
+        self.end_point = problem_json["points"]["end_point"]
+        self.given_points = problem_json["points"]["given_points"]
+        self.free_points_threshold = problem_json["points"]["free_points_threshold"]
+
+        variants = {
+            "AFV": {"points": "points_and_angles", "angles": "factors", "order": "by_variables"},
+            "AAV": {"points": "points_and_angles", "angles": "absolute", "order": "by_variables"},
+            "AFO": {"points": "points_and_angles", "angles": "factors", "order": "by_order"},
+            "AAO": {"points": "points_and_angles", "angles": "absolute", "order": "by_order"},
+            "CV": {"points": "control_points", "order": "by_variables"},
+            "CO": {"points": "control_points", "order": "by_order"}
+        }
+        if type(variant) is str:
+            self.variant = variants[variant]
+            self.variant_short = variant
+        else:
+            self.variant = variant
+            if variant["points"] == "points_and_angles":
+                self.variant_short = f"A{variant['angles'][0]}{variant['order'][3]}".upper()
+            else:
+                self.variant_short = f"C{variant['order'][3]}".upper()
+
+        assert self.variant["points"] in ["points_and_angles", "control_points"]
+        assert self.variant["order"] in ["by_variables", "by_order"]
+        if "angles" in self.variant:
+            assert self.variant["angles"] in ["factors", "absolute"]
+
+        if self.variant["points"] == "points_and_angles":
+            self.num_free_points_h = self.max_horizontal_turns - self.num_given_points - 1
+            self.num_free_points_v = self.max_vertical_turns - 1
+        else:
+            self.num_free_points_h = self.max_horizontal_turns
+            self.num_free_points_v = self.max_vertical_turns
+
+        # read the data about the bounds from the json file
+        self.area_limits = problem_json["bounds"]["limits"]
+        # construct a list of Obstacle objects
+        self.obstacles = [Obstacle(obs_dict, self.basic_material_cost, self)
+                          for obs_dict in problem_json["bounds"]["obstacles"]]
+
+    @property
+    def num_objectives(self):
+        """ Returns the number of objectives of the problem. """
+        return len(self.objectives)
+
+    @property
+    def num_constraints(self):
+        """ Returns the number of constraints of the problem. """
+        return len(self.constraints) + len(self.hard_constraints) + 1
+
+    @property
+    def num_variables(self):
+        """ Returns the number of problem variables. """
+        return len(self.get_genotype_variables())
+
+    @property
+    def variable_bounds(self):
+        """ Returns the lower and upper bound for the variables of the genotype. """
+        variables = self.get_genotype_variables()
+        variable_bounds = [self.get_variable_bounds(variable) for variable in variables]
+        lower_bounds = [bound[0] for bound in variable_bounds]
+        upper_bounds = [bound[1] for bound in variable_bounds]
+        return lower_bounds, upper_bounds
+
+    def evaluate(self, x):
+        """ Evaluates the given genotype x and returns the constraints and objectives."""
+        solution = Solution(x, self)
+        constraints, objectives = solution.evaluate_constraints_objectives()
+        return constraints, objectives
+
+    def get_genotype_variables(self, points=None, angles=None, order=None):
+        """ Returns the variables of the genotype for the problem variant.
+        If the parameters are not specified, the current variant is used. """
+        if points is None:
+            points = self.variant.get("points")
+        if angles is None:
+            angles = self.variant.get("angles")
+        if order is None:
+            order = self.variant.get("order")
+
+        if points == "points_and_angles" and angles == "factors" and order == "by_variables":
+            genotype = ["k_r", "phi", "theta", "k_h", "k_v"] * 2
+            genotype += ["k_r", "phi", "k_h"] * self.num_given_points
+            genotype += ["x", "y", "k_h", "order"] * self.num_free_points_h
+            genotype += ["u", "v", "k_v", "order"] * self.num_free_points_v
+            genotype += ["order_h", "order_v"]
+
+        elif points == "points_and_angles" and angles == "absolute" and order == "by_variables":
+            genotype = ["k_r", "phi", "theta", "a_h", "a_v"] * 2
+            genotype += ["k_r", "phi", "a_h"] * self.num_given_points
+            genotype += ["x", "y", "a_h", "order"] * self.num_free_points_h
+            genotype += ["u", "v", "a_v", "order"] * self.num_free_points_v
+            genotype += ["order_h", "order_v"]
+
+        elif points == "points_and_angles" and angles == "factors" and order == "by_order":
+            genotype = ["k_r", "phi", "theta", "k_h", "k_v"] * 2
+            genotype += ["k_r", "phi", "k_h"] * self.num_given_points
+            genotype += ["x", "y", "k_h"] * self.num_free_points_h
+            genotype += ["u", "v", "k_v"] * self.num_free_points_v
+            genotype += ["n_h", "n_v"]
+            genotype += ["order_h", "order_v"]
+
+        elif points == "points_and_angles" and angles == "absolute" and order == "by_order":
+            genotype = ["k_r", "phi", "theta", "a_h", "a_v"] * 2
+            genotype += ["k_r", "phi", "a_h"] * self.num_given_points
+            genotype += ["x", "y", "a_h"] * self.num_free_points_h
+            genotype += ["u", "v", "a_v"] * self.num_free_points_v
+            genotype += ["n_h", "n_v"]
+            genotype += ["order_h", "order_v"]
+
+        elif points == "control_points" and order == "by_variables":
+            genotype = ["k_r", "phi", "theta"] * 2
+            genotype += ["x'", "y'", "order"] * self.num_free_points_h
+            genotype += ["f_h"] * (self.num_free_points_h - 1)
+            genotype += ["u", "v", "order"] * self.num_free_points_v
+            genotype += ["f_v"] * (self.num_free_points_v - 1)
+
+        elif points == "control_points" and order == "by_order":
+            genotype = ["k_r", "phi", "theta"] * 2
+            genotype += ["x'", "y'"] * self.num_free_points_h
+            genotype += ["f_h"] * (self.num_free_points_h - 1)
+            genotype += ["u", "v"] * self.num_free_points_v
+            genotype += ["f_v"] * (self.num_free_points_v - 1)
+            genotype += ["n_h", "n_v"]
+
+        else:
+            raise ValueError(f"Invalid combination of points, angles and order. "
+                             f"points: {points}, angles: {angles}, order: {order}")
+
+        return genotype
+
+    def get_variable_bounds(self, var):
+        """ Returns the lower and upper bound for the given variable of the genotype. """
+        if var in ["k_r", "k_h", "k_v", "order", "u", "v", "f_h", "f_v"]:
+            return 0, 1
+        elif var in ["order_h", "order_v"]:
+            return 0, 2
+        elif var in ["phi", "a_h", "a_v"]:
+            return 0, 2 * np.pi
+        elif var == "theta":
+            return -np.pi / 2, np.pi / 2
+        elif var == "x":
+            return self.area_limits["x"][0], self.area_limits["x"][1]
+        elif var == "y":
+            return self.area_limits["y"][0], self.area_limits["y"][1]
+        elif var == "x'":
+            middle = (self.area_limits["x"][0] + self.area_limits["x"][1]) / 2
+            dist = (self.area_limits["x"][1] - self.area_limits["x"][0])
+            return middle - dist / 2 * self.max_out_of_bounds_control_point_factor, \
+                   middle + dist / 2 * self.max_out_of_bounds_control_point_factor
+        elif var == "y'":
+            middle = (self.area_limits["y"][0] + self.area_limits["y"][1]) / 2
+            dist = (self.area_limits["y"][1] - self.area_limits["y"][0])
+            return middle - dist / 2 * self.max_out_of_bounds_control_point_factor, \
+                   middle + dist / 2 * self.max_out_of_bounds_control_point_factor
+        elif var == "n_h":
+            return 0, self.num_free_points_h + 1
+        elif var == "n_v":
+            return 0, self.num_free_points_v + 1
+        else:
+            return -math.inf, math.inf
+
+    def check_valid_arguments(self, key, value):
+        """ Checks if the given value is in the valid range for the given key."""
+        bounds = self.get_variable_bounds(key)
+        return bounds[0] <= value <= bounds[1]
+
+
+class Obstacle:
+    """ Class representing an obstacle in the problem_name. If the price of the obstacle is not
+    specified, the obstacle is deemed to be a hard constraint. """
+
+    def __init__(self, obstacle_dict, basic_material_cost, problem):
+        self.obstacle_type = obstacle_dict["type"]
+        self.points = obstacle_dict.get("points")
+        self.z = obstacle_dict.get("z", [problem.area_limits["z"][0], problem.area_limits["z"][1]])
+        self.center = obstacle_dict.get("center")
+        self.r = obstacle_dict.get("r")
+        self.price = obstacle_dict.get("price", None)
+
+        if self.points is not None:
+            self.segments = [tuple(sorted([bp0, bp1])) for bp0, bp1 in
+                             zip(self.points, self.points[1:])] + \
+                            [tuple(sorted([self.points[-1], self.points[0]]))]
+
+        if self.price is None:
+            self.above_base_price = 1
+            self.is_hard_constraint = True
+        else:
+            self.is_hard_constraint = False
+            self.above_base_price = self.price - basic_material_cost
+
+        self.path_inside = None
+
+    def calculate_price(self, points):
+        """ Calculates the price for the given path as the length of the path inside the obstacle
+        multiplied by the extra price of the obstacle. This is later added to the base price,
+        calculated as the length of the path multiplied by the basic material cost. """
+        length_of_path_inside = 0
+
+        # check if the first point is inside the obstacle
+        if self.is_inside(points[0]):
+            start_point_dist = 0
+            inside = True
+        else:
+            start_point_dist = None
+            inside = False
+
+        # loop through all the points and add the length of the path inside the obstacle
+        # for consecutive points that are inside the obstacle
+        for point in points[1:]:
+            if inside:
+                if not self.is_inside(point):
+                    length_of_path_inside += point[3] - start_point_dist
+                    # print("outside", point, "new length", length_of_path_inside)
+                    start_point_dist = None
+                    inside = False
+            else:
+                if self.is_inside(point):
+                    # print("inside", point)
+                    start_point_dist = point[3]
+                    inside = True
+
+        # check if the last point is inside the obstacle and add the length of the last connected
+        # path inside the obstacle if it is inside
+        if self.is_inside(points[-1]) and inside:
+            length_of_path_inside += points[-1][3] - start_point_dist
+
+        self.path_inside = length_of_path_inside
+        return self.above_base_price * length_of_path_inside
+
+    def is_inside(self, point):
+        """ Checks if the given point is inside the obstacle. """
+        if self.obstacle_type == "circle":
+            return ((self.center[0] - point[0]) ** 2 + (self.center[1] - point[1]) ** 2
+                    <= self.r ** 2) and (self.z[0] <= point[2] <= self.z[1])
+        if self.obstacle_type == "sphere":
+            return (self.center[0] - point[0]) ** 2 + (self.center[1] - point[1]) ** 2 + \
+                (self.center[2] - point[2]) ** 2 <= self.r ** 2
+        if self.obstacle_type == "polygon":
+            if self.z[0] <= point[2] <= self.z[1]:
+                # count the number of segments that are directly above the point -
+                # if the number of segments is odd, the point is inside the polygon
+                # and if it is even, the point is outside the polygon
+                count = 0
+                for ((x1, y1), (x2, y2)) in self.segments:
+                    # first check if the point is between the x coordinates of the segment
+                    if x1 <= point[0] < x2:
+                        # then check if the point is below the segment
+                        if not left_turn((x1, y1), (x2, y2), point):
+                            count += 1
+                return count % 2 == 1
+            else:
+                return False
+
+
+def left_turn(p1, p2, p3):
+    """ Checks if the given points form a left turn. """
+    return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p3[0] - p1[0]) * (p2[1] - p1[1]) >= 0
