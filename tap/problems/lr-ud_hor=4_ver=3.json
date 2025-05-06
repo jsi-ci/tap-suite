@@ -1,0 +1,234 @@
+{
+    "problem_name": "lr-ud_hor=4_ver=3",
+    "max_horizontal_turns": 4,
+    "max_vertical_turns": 3,
+    "basic_material_cost": 1,
+    "max_gradient": 0.05,
+    "nadir": [
+        0.0152421403132048,
+        0.0064297063509985
+    ],
+    "ideal": [
+        0,
+        0
+    ],
+    "evaluation_tree": {
+        "weight": 1,
+        "direction": "min",
+        "norm_min": 0,
+        "norm_max": 1,
+        "inputs": {
+            "costs": {
+                "weight": 0.5,
+                "direction": "min",
+                "norm_min": 0,
+                "norm_max": 100000
+            },
+            "effects": {
+                "weight": 0.5,
+                "direction": "min",
+                "bound": 0,
+                "norm_min": 0,
+                "norm_max": 0.6,
+                "inputs": {
+                    "horizontal_curvature": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 1,
+                        "bound": 0.1
+                    },
+                    "vertical_curvature": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 1,
+                        "bound": 0.1
+                    },
+                    "gradient": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 1,
+                        "bound": 0.05
+                    },
+                    "point_distance_deviation": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 3000,
+                        "bound": 0
+                    },
+                    "point_horizontal_angle_deviation": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 3.141592653589793,
+                        "bound": 0
+                    },
+                    "point_vertical_angle_deviation": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 3.141592653589793,
+                        "bound": 0
+                    }
+                }
+            }
+        }
+    },
+    "objectives": [
+        "costs",
+        "effects"
+    ],
+    "constraints": [
+        "horizontal_curvature",
+        "vertical_curvature",
+        "gradient",
+        "point_distance_deviation",
+        "point_horizontal_angle_deviation",
+        "point_vertical_angle_deviation"
+    ],
+    "hard_constraints": [
+        "out_of_bound_points",
+        "hard_constraint_obstacles",
+        "horizontal_turns",
+        "vertical_turns",
+        "self_intersections"
+    ],
+    "bounds": {
+        "limits": {
+            "x": [
+                0,
+                3000
+            ],
+            "y": [
+                0,
+                1000
+            ],
+            "z": [
+                0,
+                100
+            ]
+        },
+        "obstacles": [
+            {
+                "type": "polygon",
+                "points": [
+                    [
+                        400,
+                        0
+                    ],
+                    [
+                        400,
+                        600
+                    ],
+                    [
+                        600,
+                        600
+                    ],
+                    [
+                        600,
+                        0
+                    ]
+                ]
+            },
+            {
+                "type": "polygon",
+                "points": [
+                    [
+                        1900,
+                        1000
+                    ],
+                    [
+                        1900,
+                        400
+                    ],
+                    [
+                        2100,
+                        400
+                    ],
+                    [
+                        2100,
+                        1000
+                    ]
+                ]
+            },
+            {
+                "type": "polygon",
+                "points": [
+                    [
+                        900,
+                        1000
+                    ],
+                    [
+                        900,
+                        0
+                    ],
+                    [
+                        1100,
+                        0
+                    ],
+                    [
+                        1100,
+                        1000
+                    ]
+                ],
+                "z": [
+                    0,
+                    60
+                ]
+            },
+            {
+                "type": "polygon",
+                "points": [
+                    [
+                        2400,
+                        1000
+                    ],
+                    [
+                        2400,
+                        0
+                    ],
+                    [
+                        2600,
+                        0
+                    ],
+                    [
+                        2600,
+                        1000
+                    ]
+                ],
+                "z": [
+                    40,
+                    100
+                ]
+            }
+        ]
+    },
+    "points": {
+        "start_point": {
+            "x": 100,
+            "y": 400,
+            "z": 40,
+            "r_max": 5,
+            "h_angle": 0,
+            "h_angle_tol": 45,
+            "v_angle": 0,
+            "v_angle_tol": 5
+        },
+        "end_point": {
+            "x": 2900,
+            "y": 600,
+            "z": 55,
+            "r_max": 5,
+            "h_angle": -180,
+            "h_angle_tol": 45,
+            "v_angle": -180,
+            "v_angle_tol": 5
+        },
+        "given_points": [],
+        "free_points_threshold": 0.25
+    },
+    "penalty": 6
+}
