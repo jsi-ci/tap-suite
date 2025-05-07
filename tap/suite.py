@@ -5,7 +5,7 @@ from tap.pymoo_problem import PymooProblem
 from tap.jmetalpy_problem import JMetalProblem
 
 
-def get_tap_suite(problem_type="raw"):
+def get_tap_suite(interface=None):
     """ returns the suite of 12 tunnel alignment problems
     """
     suite_problems = [
@@ -28,13 +28,13 @@ def get_tap_suite(problem_type="raw"):
         problem_data = json.load(open(f"tap/problems/{layout}.json"))
         problem = TunnelAlignmentProblem(problem_data, variant)
 
-        if problem_type == "raw":
+        if interface is None:
             suite[problem_name] = problem
-        elif problem_type == "pymoo":
+        elif interface == "pymoo":
             suite[problem_name] = PymooProblem(problem)
-        elif problem_type == "jmetalpy":
+        elif interface == "jmetalpy":
             suite[problem_name] = JMetalProblem(problem)
         else:
-            raise ValueError(f"Unknown problem type: {problem_type}")
+            raise ValueError(f"Unknown problem interface: {interface}")
 
     return suite
