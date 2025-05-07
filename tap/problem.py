@@ -1,5 +1,9 @@
 import math
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import matplotlib.patches as patches
+
 
 from tap.solution import Solution
 
@@ -209,6 +213,124 @@ class TunnelAlignmentProblem:
         """ Checks if the given value is in the valid range for the given key."""
         bounds = self.get_variable_bounds(key)
         return bounds[0] <= value <= bounds[1]
+
+    def plot_problem(self, solutions_list=None):
+        """ Plots the problem. """
+        fig, axs = plt.subplots(2, 1, figsize=(12, 8), layout='constrained')
+        plt.suptitle(f"{self.problem_name}", fontsize=18)
+
+        cmap, norm, sm = self.get_normalized_colormap()
+
+        clb = plt.colorbar(sm, ax=axs, pad=0.03, fraction=0.05)
+        clb.ax.set_title('Material\ncosts')
+
+        """ plot clothoid in xy plane """
+        self.plot_problem_on_ax(axs[0], yz="y", cmap=cmap, norm=norm)
+
+        """ plot clothoid in xz plane """
+        self.plot_problem_on_ax(axs[1], yz="z", cmap=cmap, norm=norm)
+
+        if solutions_list is not None:
+            for x in solutions_list:
+                solution = Solution(x, self)
+                axs[0].plot(solution.clothoid[:, 0], solution.clothoid[:, 1])
+                axs[1].plot(solution.clothoid[:, 0], solution.clothoid[:, 2])
+
+        return fig
+
+    def plot_problem_on_ax(self, ax, yz, cmap, norm, show_text=True):
+        """ Plots the problem data on the given axis. """
+        ax.set_title(f"(x, {yz}) plane")
+        ax.set_xlabel("x")
+        ax.set_ylabel(yz, rotation=0, labelpad=10)
+
+        limits = [self.area_limits["x"], self.area_limits[yz]]
+        ax.set_xlim((limits[0][0], limits[0][1]))
+        ax.set_ylim((limits[1][0], limits[1][1]))
+
+        ax.fill([limits[0][0], limits[0][0], limits[0][1], limits[0][1]],
+                [limits[1][0], limits[1][1], limits[1][1], limits[1][0]],
+                color=cmap(norm(self.basic_material_cost)), zorder=0)
+
+        min_cost, max_cost = self.get_min_max_obstacle_price()
+        plot_texts = []
+
+        def plot_given_points(given_points, c, text=None):
+            """ Plots the given points as circles in the given axis."""
+            offset = (self.area_limits[yz][1] - self.area_limits[yz][0]) / 10
+            for p in given_points:
+                ax.add_patch(patches.Circle((p["x"], p[yz]), p["r_max"], edgecolor=c,
+                                            facecolor="none", zorder=1.5))
+                if text is not None:
+                    plot_texts.append(ax.text(p["x"], p[yz] - offset, text,
+                                              fontsize=10, zorder=2.5))
+
+        def get_color_zorder(o):
+            """ Returns the color and zorder of the given obstacle. """
+            if o.is_hard_constraint:
+                if cmap.is_gray():
+                    return (0, 0, 0), 0.96, None
+                return (152 / 255, 148 / 255, 199 / 255), 0.96, None
+            # return normalised color and zorder (between 0.05 and 0.95)
+            return cmap(norm(o.price)), (o.price - min_cost) / (max_cost - min_cost) * 0.9 + 0.05, \
+                None
+
+        # plot given points as circles with radius r_max
+        plot_given_points(self.given_points, "blue")
+        if show_text:
+            plot_given_points([self.start_point], "royalblue", text="start")
+            plot_given_points([self.end_point], "royalblue", text="end")
+        else:
+            plot_given_points([self.start_point], "royalblue")
+            plot_given_points([self.end_point], "royalblue")
+
+        # plot obstacles
+        for o in self.obstacles:
+            color, zorder, hatch = get_color_zorder(o)
+
+            if yz == "y":
+                if o.obstacle_type == "circle" or o.obstacle_type == "sphere":
+                    ax.add_patch(patches.Circle((o.center[0], o.center[1]), o.r, hatch=hatch,
+                                                facecolor=color, zorder=zorder))
+
+                elif o.obstacle_type == "polygon":
+                    ax.add_patch(patches.Polygon(o.points, facecolor=color, hatch=hatch,
+                                                 zorder=zorder))
+            else:
+                if o.obstacle_type == "circle":
+                    width = 2 * o.r
+                    height = o.z[1] - o.z[0]
+                    ax.add_patch(patches.Rectangle((o.center[0] - o.r, o.z[0]), width, height, hatch=hatch,
+                                                   facecolor=color, zorder=zorder))
+                elif o.obstacle_type == "sphere":
+                    ax.add_patch(patches.Circle((o.center[0], o.center[2]), o.r, hatch=hatch,
+                                                facecolor=color, zorder=zorder))
+                elif o.obstacle_type == "polygon":
+                    height = o.z[1] - o.z[0]
+                    min_x = min([p[0] for p in o.points])
+                    width = max([p[0] for p in o.points]) - min_x
+                    ax.add_patch(patches.Rectangle((min_x, o.z[0]), width, height, hatch=hatch,
+                                                   facecolor=color, zorder=zorder))
+        return plot_texts
+
+    def get_normalized_colormap(self, cmap_name="YlOrRd"):
+        """ Returns a normalized colormap for the obstacles. """
+        min_cost, max_cost = self.get_min_max_obstacle_price()
+        if cmap_name == "Greys":
+            max_cost *= 1.5
+        cmap = mpl.colormaps[cmap_name]
+        norm = plt.Normalize(min_cost, max_cost)
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        sm.set_array([])
+        return cmap, norm, sm
+
+    def get_min_max_obstacle_price(self):
+        """ Returns the minimum and maximum price of the obstacles. """
+        prices = [obs.price for obs in self.obstacles if not obs.is_hard_constraint]
+        if len(prices) == 0:
+            return self.basic_material_cost, self.basic_material_cost
+        else:
+            return min(prices + [self.basic_material_cost]), max(prices + [self.basic_material_cost])
 
 
 class Obstacle:

@@ -256,48 +256,9 @@ class Solution:
             self.evaluation_dict["point_horizontal_angle_deviation"] += h_angle_dev
             self.evaluation_dict["point_vertical_angle_deviation"] += v_angle_dev
 
-        self.evaluation_dict["self_intersections"] = self.num_self_intersections()
+        self.evaluation_dict["self_intersections"] = self.find_self_intersection()
 
-    def num_self_intersections_old(self):
-        """ Calculates the number of self-intersections of the clothoid. """
-        intersections = []
-        # compare points that are less than threshold_2d meters apart in the xy plane
-        threshold_2d = 10
-        # points of intersection are those that are more than threshold_cum_dist meters apart in the
-        # cumulative distance, but less than threshold_2d meters apart in the xy plane
-        threshold_cum_dist = 100
-        # additionally, if the difference in z coordinates of the points of intersection is more
-        # than threshold_z, it is ignored (there is enough vertical space inbetween the points)
-        threshold_z = 10
-
-        # sort the clothoid points by the x coordinate
-        clothoid_sorted = self.clothoid[self.clothoid[:, 0].argsort()]
-
-        # iterate through the points
-        for i in range(len(clothoid_sorted) - 1):
-            # compare current point, with all points that have the difference in x coordinate
-            # smaller than threshold_2d
-            j = i + 1
-            while j < len(clothoid_sorted) and \
-                    clothoid_sorted[j][0] - clothoid_sorted[i][0] < threshold_2d:
-                # calculate the 2d distance between the points
-                dist = np.linalg.norm(clothoid_sorted[j][:2] - clothoid_sorted[i][:2])
-                # if the distance is more than threshold_2d, this is not a point of intersection
-                if dist > threshold_2d:
-                    j += 1
-                    continue
-
-                # if the distance is less than threshold_2d, but the difference in cumulative
-                # distance is more than threshold_cum_dist, this can be a point of intersection
-                if clothoid_sorted[j][3] - clothoid_sorted[i][3] > threshold_cum_dist:
-                    # if the difference in y coordinate is more than threshold_y, this is not
-                    # a point of intersection
-                    if abs(clothoid_sorted[j][2] - clothoid_sorted[i][2]) < threshold_z:
-                        return 1
-                j += 1
-        return 0
-
-    def num_self_intersections(self):
+    def find_self_intersection(self):
         """ Calculates the number of self-intersections of the clothoid. """
         threshold_2d = 10
         threshold_cum_dist = 100
@@ -363,19 +324,10 @@ class Solution:
             next_point = self.clothoid[closest_point_idx + 1]
 
         def calculate_angle_deviation(angle, desired_angle, tolerance):
-            min_angle = am.mod2pi(desired_angle - tolerance)
-            max_angle = am.mod2pi(desired_angle + tolerance)
-            if min_angle > max_angle:
-                if angle > min_angle or angle < max_angle:
-                    return 0
-                else:
-                    return min(min_angle - angle, angle - max_angle)
-            else:
-                if min_angle < angle < max_angle:
-                    return 0
-                else:
-                    return min([am.mod2pi(angle - min_angle), am.mod2pi(min_angle - angle),
-                                am.mod2pi(angle - max_angle), am.mod2pi(max_angle - angle)])
+            angle = am.mod2pi(angle)
+            desired_angle = am.mod2pi(desired_angle)
+            deviation = abs(am.mod2pi(angle - desired_angle + math.pi) - math.pi)
+            return max(0, deviation - tolerance)
 
         # calculate the horizontal angle deviation
         h_angle = am.angle_between_points(closest_point, next_point)
