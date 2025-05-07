@@ -229,6 +229,5 @@
         },
         "given_points": [],
         "free_points_threshold": 0.25
-    },
-    "penalty": 6
+    }
 }

@@ -20,8 +20,10 @@ class TunnelAlignmentProblem:
         self.basic_material_cost = problem_json["basic_material_cost"]
         # calculate the maximum gradient in degrees from the constraint in percentage
         self.max_gradient_degrees = math.atan(problem_json["max_gradient"]) * 180 / math.pi
-        self.penalty = problem_json["penalty"]
+
+        # how far out of bounds the control points can be
         self.max_out_of_bounds_control_point_factor = 1.5
+        # discretization step for the clothoid
         self.min_dist = 5
 
         # read the nadir and ideal points from the json file for convergence calculation
@@ -34,6 +36,9 @@ class TunnelAlignmentProblem:
         self.objectives = problem_json["objectives"]
         self.constraints = problem_json["constraints"]
         self.hard_constraints = problem_json["hard_constraints"]
+        # set the penalty for the problem to be the number of constraints
+        self.penalty = len(self.constraints)
+
 
         # read the data about the points from the json file
         self.num_given_points = len(problem_json["points"]["given_points"])
