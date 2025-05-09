@@ -2,6 +2,7 @@ import warnings as _warnings
 try:
     from jmetal.core.problem import FloatProblem
 except ImportError:
+    FloatProblem = object
     _warnings.warn("jmetalpy not installed, jmetalpy problems will not be available.")
 
 

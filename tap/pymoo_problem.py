@@ -2,6 +2,7 @@ import warnings as _warnings
 try:
     from pymoo.core.problem import ElementwiseProblem
 except ImportError:
+    ElementwiseProblem = object
     _warnings.warn("pymoo not installed, pymoo problems will not be available.")
 
 
