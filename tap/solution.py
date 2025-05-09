@@ -13,9 +13,8 @@ def clothoid_length(clothoid):
 
 
 class Solution:
-    """ Class representing a solution to the problem_name. """
-
-    def __init__(self, genotype, problem, do_evaluate=True):
+    """ Class representing a solution to the tunnel alignment problem. """
+    def __init__(self, genotype, problem):
         self.problem = problem
         # check if the genotype is of correct length
         if len(genotype) != problem.num_variables:
@@ -45,8 +44,7 @@ class Solution:
             self.clothoid = self.create_clothoid(points="control_points",
                                                  factors_h=factors_h, factors_v=factors_v)
 
-        # evaluate the solution
-        if self.clothoid is not None and do_evaluate:
+        if self.clothoid is not None:
             self.complete_evaluation_dict()
 
     def convert_to_order_by_variables(self, genotype):
@@ -181,7 +179,7 @@ class Solution:
             raise ValueError(f"Unknown points argument: {points}")
 
     def create_clothoid(self, points, **kwargs):
-        """ Creates a clothoid for the points. """
+        """ Creates a clothoid for the given points. """
 
         # first create the horizontal clothoid
         if points == "points_and_angles":
@@ -502,8 +500,7 @@ class Solution:
         try:
             objectives = [self.evaluate_tree_recursively(self.problem.evaluation_tree, obj)
                           for obj in self.problem.objectives]
-        except Exception as e:
-            print("EVALUATING OBJECTIVES ERROR:", e)
+        except:
             objectives = [None] * len(self.problem.objectives)
 
         # evaluate constraints

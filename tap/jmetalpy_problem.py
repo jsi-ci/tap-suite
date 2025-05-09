@@ -6,6 +6,7 @@ except ImportError:
 
 
 class JMetalProblem(FloatProblem):
+    """ Wrapper class for jMetalPy optimization algorithms """
     def __init__(self, problem):
         self.problem = problem
         self.id = problem.id

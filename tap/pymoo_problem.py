@@ -6,6 +6,7 @@ except ImportError:
 
 
 class PymooProblem(ElementwiseProblem):
+    """ Wrapper class for pymoo optimization algorithms """
     def __init__(self, problem):
         self.problem = problem
         lower_bounds, upper_bounds = problem.variable_bounds

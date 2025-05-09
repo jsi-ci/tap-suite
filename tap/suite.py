@@ -6,7 +6,9 @@ from tap.jmetalpy_problem import JMetalProblem
 
 
 def get_tap_suite(interface=None):
-    """ returns the suite of 12 tunnel alignment problems """
+    """ returns the suite of 12 tunnel alignment problems, with the specified interface:
+    "pymoo", "jmetalpy" or None (default). If None is specified, the problems are returned as
+    TunnelAlignmentProblem objects."""
     suite_problems = [
         ("TAP1", "left-right_hard=2_hor=1_ver=2_soft=1", "CO"),
         ("TAP2", "15-areas_hor=3_ver=1", "AFO"),
