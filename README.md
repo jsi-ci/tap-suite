@@ -5,7 +5,7 @@ A Suite and Generator of Tunnel Alignment Problems.
 
 
 ```python
-from tap.suite import get_tap_suite
+from tap import get_tap_suite
 ```
 
 #### 1.A  Run suite problems with Pymoo
@@ -302,7 +302,7 @@ Visualize the created problem
 
 
 ```python
-from tap.problem import TunnelAlignmentProblem
+from tap import TunnelAlignmentProblem
 
 tap_problem = TunnelAlignmentProblem(problem, "AFV")
 fig = tap_problem.plot_problem()
@@ -320,7 +320,7 @@ Wrap the problem into the Pymoo interface class and run optimization
 
 
 ```python
-from tap.pymoo_problem import PymooProblem
+from tap import PymooProblem
 pymoo_problem = PymooProblem(tap_problem)
 
 from pymoo.algorithms.moo.nsga2 import NSGA2

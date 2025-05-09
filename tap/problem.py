@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.patches as patches
 
-
 from tap.solution import Solution
 
 

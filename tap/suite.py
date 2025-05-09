@@ -1,8 +1,6 @@
 import json
 
-from tap.problem import TunnelAlignmentProblem
-from tap.pymoo_problem import PymooProblem
-from tap.jmetalpy_problem import JMetalProblem
+from tap import TunnelAlignmentProblem, PymooProblem, JMetalProblem
 
 
 def get_tap_suite(interface=None):
