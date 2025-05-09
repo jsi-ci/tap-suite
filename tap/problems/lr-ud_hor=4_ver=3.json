@@ -1,5 +1,5 @@
 {
-    "problem_name": "lr-ud_hor=4_ver=3",
+    "problem_id": "lr-ud_hor=4_ver=3",
     "max_horizontal_turns": 4,
     "max_vertical_turns": 3,
     "basic_material_cost": 1,

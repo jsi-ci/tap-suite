@@ -1,5 +1,5 @@
 {
-    "problem_name": "15-areas_hor=3_ver=1",
+    "problem_id": "15-areas_hor=3_ver=1",
     "max_horizontal_turns": 3,
     "max_vertical_turns": 1,
     "basic_material_cost": 1,

@@ -1,5 +1,5 @@
 {
-    "problem_name": "next-to-tunnel_num=2_hor=1_ver=1",
+    "problem_id": "next-to-tunnel_num=2_hor=1_ver=1",
     "max_horizontal_turns": 3,
     "max_vertical_turns": 1,
     "basic_material_cost": 1,

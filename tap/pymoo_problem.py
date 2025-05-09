@@ -9,6 +9,8 @@ class PymooProblem(ElementwiseProblem):
     def __init__(self, problem):
         self.problem = problem
         lower_bounds, upper_bounds = problem.variable_bounds
+        self.id = problem.id
+        self.name = problem.name
 
         super().__init__(n_var=problem.num_variables,
                          n_obj=problem.num_objectives,
@@ -17,7 +19,9 @@ class PymooProblem(ElementwiseProblem):
                          xu=upper_bounds)
 
     def _evaluate(self, x, out, *args, **kwargs):
+        """ Evaluates the problem and saves the results in the output dictionary. """
         constraints, objectives = self.problem.evaluate(x)
 
         out["F"] = objectives
         out["G"] = constraints
+

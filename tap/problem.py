@@ -10,7 +10,7 @@ from tap.solution import Solution
 
 class TunnelAlignmentProblem:
     """ Class representing the tunnel alignment problem. """
-    def __init__(self, problem_json, variant):
+    def __init__(self, problem_json, variant, problem_name=""):
         """ Initializes the problem from the given problem json file and the given
         variant. It can be in short string form: one of "AFV", "AFO", "AAV", "AAO", "CV" or "CO",
         or in dict form: {
@@ -18,7 +18,6 @@ class TunnelAlignmentProblem:
             "angles": "factor" or "absolute",
             "order": "by_variables" or "by_order",
         }. """
-        self.problem_name = problem_json["problem_name"]
         self.max_horizontal_turns = problem_json["max_horizontal_turns"]
         self.max_vertical_turns = problem_json["max_vertical_turns"]
         self.basic_material_cost = problem_json["basic_material_cost"]
@@ -42,7 +41,6 @@ class TunnelAlignmentProblem:
         self.hard_constraints = problem_json["hard_constraints"]
         # set the penalty for the problem to be the number of constraints
         self.penalty = len(self.constraints)
-
 
         # read the data about the points from the json file
         self.num_given_points = len(problem_json["points"]["given_points"])
@@ -86,6 +84,9 @@ class TunnelAlignmentProblem:
         # construct a list of Obstacle objects
         self.obstacles = [Obstacle(obs_dict, self.basic_material_cost, self)
                           for obs_dict in problem_json["bounds"]["obstacles"]]
+
+        self.id = f'{problem_json["problem_id"]}_{self.variant_short}'
+        self.name = problem_name
 
     @property
     def num_objectives(self):
@@ -217,7 +218,7 @@ class TunnelAlignmentProblem:
     def plot_problem(self, solutions_list=None):
         """ Plots the problem. """
         fig, axs = plt.subplots(2, 1, figsize=(12, 8), layout='constrained')
-        plt.suptitle(f"{self.problem_name}", fontsize=18)
+        plt.suptitle(f"{self.id}".replace("_", "-"), fontsize=18)
 
         cmap, norm, sm = self.get_normalized_colormap()
 

@@ -1,5 +1,5 @@
 {
-    "problem_name": "left-right_hard=2_hor=1_ver=1_soft=2",
+    "problem_id": "left-right_hard=2_hor=1_ver=1_soft=2",
     "max_horizontal_turns": 3,
     "max_vertical_turns": 1,
     "basic_material_cost": 1,

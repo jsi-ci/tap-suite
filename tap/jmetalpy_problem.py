@@ -8,6 +8,9 @@ except ImportError:
 class JMetalProblem(FloatProblem):
     def __init__(self, problem):
         self.problem = problem
+        self.id = problem.id
+        self.name = problem.name
+
         super(JMetalProblem, self).__init__()
 
         self.obj_directions = [self.MINIMIZE, self.MINIMIZE]
@@ -32,5 +35,4 @@ class JMetalProblem(FloatProblem):
         return solution
 
     def name(self):
-        return self.problem.problem_name
-
+        return self.name
