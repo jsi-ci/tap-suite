@@ -5,7 +5,7 @@ Authors: Nace Sever, Tea Tušar, 2025
 License: BSD 3-Clause, see LICENSE file.
 """
 
-__author__ = "Nace Sever, Tea Tusar"
+__author__ = "Nace Sever, Erik Dovgan, Tea Tusar"
 __license__ = "BSD 3-clause"
 __version__ = "0.0.1"
 
