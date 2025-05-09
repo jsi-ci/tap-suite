@@ -38,16 +38,6 @@ termination = get_termination("n_eval", 500)
 results = minimize(problem, algorithm, termination, verbose=True)
 ```
 
-    ==========================================================================================
-    n_gen  |  n_eval  | n_nds  |     cv_min    |     cv_avg    |      eps      |   indicator  
-    ==========================================================================================
-         1 |      100 |      4 |  0.000000E+00 |  3.4211720134 |             - |             -
-         2 |      200 |      5 |  0.000000E+00 |  0.0161737472 |  0.0311901978 |         ideal
-         3 |      300 |      5 |  0.000000E+00 |  0.000000E+00 |  0.2528684768 |         ideal
-         4 |      400 |      6 |  0.000000E+00 |  0.000000E+00 |  0.2354874575 |         ideal
-         5 |      500 |      8 |  0.000000E+00 |  0.000000E+00 |  0.0793618248 |             f
-    
-
 #### 1.B Run suite problems with jMetalPy
 
 
@@ -84,13 +74,6 @@ algorithm = NSGAII(
 )
 algorithm.run()
 ```
-
-    [2025-05-09 13:18:49,352] [jmetal.core.algorithm] [DEBUG] Creating initial set of solutions...
-    [2025-05-09 13:18:49,354] [jmetal.core.algorithm] [DEBUG] Evaluating solutions...
-    [2025-05-09 13:18:53,832] [jmetal.core.algorithm] [DEBUG] Initializing progress...
-    [2025-05-09 13:18:53,832] [jmetal.core.algorithm] [DEBUG] Running main loop until termination criteria is met
-    [2025-05-09 13:19:10,089] [jmetal.core.algorithm] [DEBUG] Finished!
-    
 
 #### 1.C Run suite problems with other library/custom algorithm
 
@@ -348,16 +331,6 @@ algorithm = NSGA2(pop_size=100)
 termination = get_termination("n_eval", 500)
 result = minimize(pymoo_problem, algorithm, termination, verbose=True, seed=42)
 ```
-
-    ==========================================================================================
-    n_gen  |  n_eval  | n_nds  |     cv_min    |     cv_avg    |      eps      |   indicator  
-    ==========================================================================================
-         1 |      100 |      2 |  0.000000E+00 |  5.8063661670 |             - |             -
-         2 |      200 |      2 |  0.000000E+00 |  4.3548929956 |  0.6746845192 |         ideal
-         3 |      300 |      4 |  0.000000E+00 |  2.4933075831 |  0.2100512420 |             f
-         4 |      400 |      5 |  0.000000E+00 |  0.0012096046 |  0.2670364128 |         ideal
-         5 |      500 |      7 |  0.000000E+00 |  0.000000E+00 |  0.0457576420 |             f
-    
 
 Plot the problem with the results
 
