@@ -1,0 +1,275 @@
+{
+    "problem_id": "15-areas_hor=3_ver=2",
+    "max_horizontal_turns": 3,
+    "max_vertical_turns": 2,
+    "basic_material_cost": 1,
+    "max_gradient": 0.05,
+    "nadir": [
+        0.3018179861490873,
+        0.0004557415461172
+    ],
+    "ideal": [
+        0,
+        0
+    ],
+    "evaluation_tree": {
+        "weight": 1,
+        "direction": "min",
+        "norm_min": 0,
+        "norm_max": 1,
+        "inputs": {
+            "costs": {
+                "weight": 0.5,
+                "direction": "min",
+                "norm_min": 0,
+                "norm_max": 100000
+            },
+            "effects": {
+                "weight": 0.5,
+                "direction": "min",
+                "bound": 0,
+                "norm_min": 0,
+                "norm_max": 0.6,
+                "inputs": {
+                    "horizontal_curvature": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 1,
+                        "bound": 0.1
+                    },
+                    "vertical_curvature": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 1,
+                        "bound": 0.1
+                    },
+                    "gradient": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 1,
+                        "bound": 0.05
+                    },
+                    "point_distance_deviation": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 3000,
+                        "bound": 0
+                    },
+                    "point_horizontal_angle_deviation": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 3.141592653589793,
+                        "bound": 0
+                    },
+                    "point_vertical_angle_deviation": {
+                        "weight": 0.1,
+                        "direction": "min",
+                        "norm_min": 0,
+                        "norm_max": 3.141592653589793,
+                        "bound": 0
+                    }
+                }
+            }
+        }
+    },
+    "objectives": [
+        "costs",
+        "effects"
+    ],
+    "constraints": [
+        "horizontal_curvature",
+        "vertical_curvature",
+        "gradient",
+        "point_distance_deviation",
+        "point_horizontal_angle_deviation",
+        "point_vertical_angle_deviation"
+    ],
+    "hard_constraints": [
+        "out_of_bound_points",
+        "hard_constraint_obstacles",
+        "horizontal_turns",
+        "vertical_turns",
+        "self_intersections"
+    ],
+    "bounds": {
+        "limits": {
+            "x": [
+                0,
+                3000
+            ],
+            "y": [
+                0,
+                1000
+            ],
+            "z": [
+                0,
+                100
+            ]
+        },
+        "obstacles": [
+            {
+                "type": "circle",
+                "center": [
+                    1897,
+                    286
+                ],
+                "r": 94,
+                "price": 153
+            },
+            {
+                "type": "circle",
+                "center": [
+                    486,
+                    813
+                ],
+                "r": 59,
+                "price": 120
+            },
+            {
+                "type": "circle",
+                "center": [
+                    2650,
+                    843
+                ],
+                "r": 138,
+                "price": 137
+            },
+            {
+                "type": "circle",
+                "center": [
+                    1947,
+                    633
+                ],
+                "r": 96,
+                "price": 59
+            },
+            {
+                "type": "circle",
+                "center": [
+                    2383,
+                    825
+                ],
+                "r": 70
+            },
+            {
+                "type": "circle",
+                "center": [
+                    378,
+                    306
+                ],
+                "r": 129,
+                "price": 197
+            },
+            {
+                "type": "circle",
+                "center": [
+                    642,
+                    357
+                ],
+                "r": 69,
+                "price": 177
+            },
+            {
+                "type": "circle",
+                "center": [
+                    946,
+                    326
+                ],
+                "r": 82,
+                "price": 164
+            },
+            {
+                "type": "circle",
+                "center": [
+                    2331,
+                    233
+                ],
+                "r": 105,
+                "price": 103
+            },
+            {
+                "type": "circle",
+                "center": [
+                    1708,
+                    635
+                ],
+                "r": 92,
+                "price": 115
+            },
+            {
+                "type": "circle",
+                "center": [
+                    1339,
+                    757
+                ],
+                "r": 118,
+                "price": 150
+            },
+            {
+                "type": "circle",
+                "center": [
+                    652,
+                    689
+                ],
+                "r": 129,
+                "price": 145
+            },
+            {
+                "type": "circle",
+                "center": [
+                    1197,
+                    476
+                ],
+                "r": 93,
+                "price": 180
+            },
+            {
+                "type": "circle",
+                "center": [
+                    1355,
+                    133
+                ],
+                "r": 101,
+                "price": 88
+            },
+            {
+                "type": "circle",
+                "center": [
+                    1534,
+                    717
+                ],
+                "r": 80,
+                "price": 144
+            }
+        ]
+    },
+    "points": {
+        "start_point": {
+            "x": 100,
+            "y": 400,
+            "z": 40,
+            "r_max": 5,
+            "h_angle": 0,
+            "h_angle_tol": 45,
+            "v_angle": 0,
+            "v_angle_tol": 5
+        },
+        "end_point": {
+            "x": 2900,
+            "y": 600,
+            "z": 55,
+            "r_max": 5,
+            "h_angle": -180,
+            "h_angle_tol": 45,
+            "v_angle": -180,
+            "v_angle_tol": 5
+        },
+        "given_points": [],
+        "free_points_threshold": 0.25
+    }
+}
