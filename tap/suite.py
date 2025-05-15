@@ -1,4 +1,5 @@
 import json
+import os
 
 from tap import TunnelAlignmentProblem, PymooProblem, JMetalProblem
 
@@ -21,10 +22,29 @@ def get_tap_suite(interface=None):
         ("TAP11", "next-to-tunnel_num=1_hor=1_ver=1", "AAO"),
         ("TAP12", "next-to-tunnel_num=1_hor=1_ver=1", "AFO")
     ]
+    return _get_tap_problems(suite_problems, interface)
 
+
+def get_tap_300_problems(interface=None):
+    """ returns the list of all 300 tunnel alignment problems, with the specified interface:
+    "pymoo", "jmetalpy" or None (default). If None is specified, the problems are returned as
+    TunnelAlignmentProblem objects."""
+
+    problem_layouts = os.listdir("tap/problems")
+    suite_problems = []
+    i = 1
+    for layout in problem_layouts:
+        for variant in ["CO", "CV", "AFO", "AFV", "AAO", "AAV"]:
+            suite_problems.append((f"TAP300-{i}", layout, variant))
+            i += 1
+
+    return _get_tap_problems(suite_problems, interface)
+
+
+def _get_tap_problems(suite_problems, interface=None):
     suite = []
-    for i, (problem_name, layout, variant) in enumerate(suite_problems):
-        problem_data = json.load(open(f"tap/problems/{layout}.json"))
+    for problem_name, layout, variant in suite_problems:
+        problem_data = json.load(open(f"tap/problems/{layout}"))
         problem = TunnelAlignmentProblem(problem_data, variant, problem_name=problem_name)
 
         if interface is None:
@@ -35,5 +55,4 @@ def get_tap_suite(interface=None):
             suite.append(JMetalProblem(problem))
         else:
             raise ValueError(f"Unknown problem interface: {interface}")
-
     return suite
