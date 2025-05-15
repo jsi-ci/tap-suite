@@ -1,5 +1,12 @@
 # tap-suite
-A Suite and Generator of Tunnel Alignment Problems.
+This repository provides a suite of 12 benchmark problems for biobjective optimization, 
+reflecting real-world-like problem of finding the optimal tunnel route. 
+Problems in the suite have varying number of variables and are of different difficulty. 
+In addition to the given suite of problems, it is possible to generate custom problem instances.
+
+### Instalation
+`pip install tap-suite`
+
 
 ### 1. Optimizing the problems from the suite: 
 
@@ -100,12 +107,50 @@ suite = get_tap_suite()
 custom_suite = [CustomProblem(p) for p in suite]
 ```
 
-### 2. Generating Problems
+### 2. Created problems
+We created 6 different frames with various number of layouts, all together being 50 configurations. 
+Together with six possible variants (genotype to phenotype matchings) this gives us 300 problems.
 
+We designed 6 distinct frames, each representing a different tunnel alignment scenario. 
+Every frame includes multiple layouts, totaling 50 unique configurations. 
+Each configuration can be combined with 6 different genotype-to-phenotype mappings, 
+resulting in 300 distinct biobjective optimization problems.
+
+The table below summarizes the characteristics of each frame:
+
+| frame          | Number of Layouts | Dimension Range |
+|----------------|-------------------|-----------------|
+| u-turn         | 6                 | 12-24           |
+| next-to-tunnel | 10                | 12-36           |
+| lr-ud          | 8                 | 18-36           |
+| loop           | 6                 | 21-36           |
+| left-right     | 10                | 12-28           |
+| 15-areas       | 10                | 12-32           |
+
+#### u-turn
+![png](README_files/u-turn.png)
+
+#### next-to-tunnel
+![png](README_files/next-to-tunnel.png)
+
+#### lr-ud
+![png](README_files/lr-ud.png)
+
+#### loop
+![png](README_files/loop.png)
+
+#### left-right
+![png](README_files/left-right.png)
+
+#### 15-areas
+![png](README_files/15-areas.png)
+
+
+### 3. Generating Problems
+In this section we explain how to generate custom problem instances
 
 ```python
-# Problem is represented as a python dictionary
-problem = {}
+problem = {} # Problem is represented as a python dictionary
 ```
 
 Set the problem id and geometric constraints
