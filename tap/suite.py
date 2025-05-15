@@ -35,7 +35,7 @@ def get_tap_300_problems(interface=None):
     i = 1
     for layout in problem_layouts:
         for variant in ["CO", "CV", "AFO", "AFV", "AAO", "AAV"]:
-            suite_problems.append((f"TAP300-{i}", layout, variant))
+            suite_problems.append((f"TAP300-{i}", layout[:-5], variant))
             i += 1
 
     return _get_tap_problems(suite_problems, interface)
@@ -44,7 +44,7 @@ def get_tap_300_problems(interface=None):
 def _get_tap_problems(suite_problems, interface=None):
     suite = []
     for problem_name, layout, variant in suite_problems:
-        problem_data = json.load(open(f"tap/problems/{layout}"))
+        problem_data = json.load(open(f"tap/problems/{layout}.json"))
         problem = TunnelAlignmentProblem(problem_data, variant, problem_name=problem_name)
 
         if interface is None:
