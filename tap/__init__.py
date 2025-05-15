@@ -12,4 +12,4 @@ __version__ = "0.0.1"
 from .problem import TunnelAlignmentProblem
 from .jmetalpy_problem import JMetalProblem
 from .pymoo_problem import PymooProblem
-from .suite import get_tap_suite
+from .suite import get_tap_suite, get_tap_300_problems
