@@ -216,8 +216,8 @@ class TunnelAlignmentProblem:
 
     def plot_problem(self, solutions_list=None):
         """ Plots the problem. """
-        fig, axs = plt.subplots(2, 1, figsize=(12, 8), layout='constrained')
-        plt.suptitle(f"{self.id}".replace("_", "-"), fontsize=18)
+        fig, axs = plt.subplots(2, 1, figsize=(8, 6), layout='constrained')
+        plt.suptitle(f"{self.id}".split("_")[0].replace("_", "-"), fontsize=16)
 
         cmap, norm, sm = self.get_normalized_colormap()
 
