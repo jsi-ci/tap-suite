@@ -1,7 +1,7 @@
 """ This package implements the tunnel alignment problem and includes a suite of 12 benchmark
 instances. It also provides functionality for generating custom problem instances.
 
-Authors: Nace Sever, Tea Tušar, 2025
+Authors: Nace Sever, Erik Dovgan, Tea Tušar, 2025
 License: BSD 3-Clause, see LICENSE file.
 """
 
