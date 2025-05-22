@@ -13,6 +13,8 @@ class PymooProblem(ElementwiseProblem):
         lower_bounds, upper_bounds = problem.variable_bounds
         self.id = problem.id
         self.name = problem.name
+        self.ideal = problem.ideal
+        self.nadir = problem.nadir
 
         super().__init__(n_var=problem.num_variables,
                          n_obj=problem.num_objectives,

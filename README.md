@@ -3,6 +3,8 @@ This repository provides a suite of 12 benchmark problems for biobjective optimi
 reflecting real-world-like problem of finding the optimal tunnel route. 
 Problems in the suite have varying number of variables and are of different difficulty. 
 In addition to the given suite of problems, it is possible to generate custom problem instances.
+All benchmark runs are evaluated over 10000 function evaluations, 
+typically completing in about 5 minutes on a standard machine.
 
 ### Instalation
 `pip install tap-suite`
@@ -14,7 +16,6 @@ In addition to the given suite of problems, it is possible to generate custom pr
 ```python
 from tap import get_tap_suite
 ```
-
 #### 1.A  Run suite problems with Pymoo
 
 
@@ -45,23 +46,30 @@ termination = get_termination("n_eval", 500)
 results = minimize(problem, algorithm, termination, verbose=True)
 ```
 
-#### 1.B Run suite problems with jMetalPy
+    ==========================================================================================
+    n_gen  |  n_eval  | n_nds  |     cv_min    |     cv_avg    |      eps      |   indicator  
+    ==========================================================================================
+         1 |      100 |      4 |  0.000000E+00 |  3.6479353710 |             - |             -
+         2 |      200 |      7 |  0.000000E+00 |  0.0591441885 |  0.0242239185 |         ideal
+         3 |      300 |      6 |  0.000000E+00 |  0.000000E+00 |  0.0183878428 |         ideal
+         4 |      400 |      6 |  0.000000E+00 |  0.000000E+00 |  0.0724697403 |         ideal
+         5 |      500 |      6 |  0.000000E+00 |  0.000000E+00 |  0.0973167994 |         ideal
+    
 
 
 ```python
-# get the list of 12 problems from the suite, wrapped in a class that support optimization with jmetalpy library
-suite = get_tap_suite(interface="jmetalpy")
-# pick one problem to optimize
-problem = suite[3]
-problem.name, problem.id
+# problems from the suite already have approximations for ideal and nadir points set
+problem.ideal, problem.nadir
 ```
 
 
 
 
-    ('TAP4', '15-areas_hor=1_ver=2_CV')
+    ([0, 0], [0.3018191170221708, 0.0003757249154668])
 
 
+
+#### 1.B Run suite problems with jMetalPy
 
 
 ```python
@@ -70,7 +78,11 @@ from jmetal.operator.crossover import SBXCrossover
 from jmetal.operator.mutation import PolynomialMutation
 from jmetal.util.termination_criterion import StoppingByEvaluations
 
-# optimize selected problem with NSGA2 algorithm 
+# get the list of 12 problems from the suite, wrapped in a class that support optimization with jmetalpy library
+suite = get_tap_suite(interface="jmetalpy")
+problem = suite[3]
+
+# optimize selected problem with NSGA2 algorithm
 algorithm = NSGAII(
     problem=problem,
     population_size=100,
@@ -82,6 +94,13 @@ algorithm = NSGAII(
 algorithm.run()
 ```
 
+    [2025-05-22 11:07:32,827] [jmetal.core.algorithm] [DEBUG] Creating initial set of solutions...
+    [2025-05-22 11:07:32,829] [jmetal.core.algorithm] [DEBUG] Evaluating solutions...
+    [2025-05-22 11:07:36,332] [jmetal.core.algorithm] [DEBUG] Initializing progress...
+    [2025-05-22 11:07:36,333] [jmetal.core.algorithm] [DEBUG] Running main loop until termination criteria is met
+    [2025-05-22 11:07:48,901] [jmetal.core.algorithm] [DEBUG] Finished!
+    
+
 #### 1.C Run suite problems with other library/custom algorithm
 
 
@@ -91,6 +110,10 @@ algorithm.run()
 class CustomProblem:
     def __init__(self, problem):
         self.problem = problem
+        self.id = problem.id
+        self.name = problem.name
+        self.ideal = problem.ideal
+        self.nadir = problem.nadir
         # ...
 
     def evaluate(self, x):

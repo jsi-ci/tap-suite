@@ -12,6 +12,8 @@ class JMetalProblem(FloatProblem):
         self.problem = problem
         self.id = problem.id
         self.name = problem.name
+        self.ideal = problem.ideal
+        self.nadir = problem.nadir
 
         super(JMetalProblem, self).__init__()
 
