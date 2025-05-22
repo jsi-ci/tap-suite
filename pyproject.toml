@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tap-suite"
+dynamic = ["version"]
+
+description = " A Suite and Generator of Tunnel Alignment Problems "
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Nace Sever" },
+    { name = "Tea Tusar" , email="tea.tusar@ijs.si"},
+    { name="Erik Dovgan" }
+]
+maintainers = [
+    { name = "Tea Tusar" , email="tea.tusar@ijs.si"},
+]
+dependencies = [
+    "matplotlib >= 3.6.3",
+    "numpy >= 1.24.0",
+    "scipy >= 1.10.0"
+]
+requires-python = ">=3.8"
+
+keywords = [
+    "multi-objective",
+    "optimization",
+    "benchmark"
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "tap.__version__"}
+
+[project.urls]
+Homepage = "https://github.com/jsi-ci/tap-suite"
+
+[tool.setuptools]
+packages = ["tap"]
