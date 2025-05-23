@@ -86,21 +86,9 @@ class TunnelAlignmentProblem:
 
         self.id = f'{problem_json["problem_id"]}_{self.variant_short}'
         self.name = problem_name
-
-    @property
-    def num_objectives(self):
-        """ Returns the number of objectives of the problem. """
-        return len(self.objectives)
-
-    @property
-    def num_constraints(self):
-        """ Returns the number of constraints of the problem. """
-        return len(self.constraints) + len(self.hard_constraints) + 1
-
-    @property
-    def num_variables(self):
-        """ Returns the number of problem variables. """
-        return len(self.get_genotype_variables())
+        self.num_variables =  len(self.get_genotype_variables())
+        self.num_objectives = len(self.objectives)
+        self.num_constraints = len(self.constraints) + len(self.hard_constraints) + 1
 
     @property
     def variable_bounds(self):

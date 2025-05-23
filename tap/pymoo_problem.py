@@ -15,6 +15,9 @@ class PymooProblem(ElementwiseProblem):
         self.name = problem.name
         self.ideal = problem.ideal
         self.nadir = problem.nadir
+        self.num_variables = problem.num_variables
+        self.num_objectives = problem.num_objectives
+        self.num_constraints = problem.num_constraints
 
         super().__init__(n_var=problem.num_variables,
                          n_obj=problem.num_objectives,

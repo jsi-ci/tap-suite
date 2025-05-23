@@ -14,6 +14,9 @@ class JMetalProblem(FloatProblem):
         self.name = problem.name
         self.ideal = problem.ideal
         self.nadir = problem.nadir
+        self.num_variables = problem.num_variables
+        self.num_objectives = problem.num_objectives
+        self.num_constraints = problem.num_constraints
 
         super(JMetalProblem, self).__init__()
 
