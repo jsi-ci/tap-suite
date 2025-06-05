@@ -460,6 +460,13 @@ class Solution:
         feasible = True
         hard_constraints = []
 
+        if any((math.isnan(value) or value is None) for value in self.evaluation_dict.values()):
+            objectives = [None] * len(self.problem.objectives)
+            constraints = [1] * len(self.problem.constraints)
+            hard_constraints = [1] * len(self.problem.hard_constraints)
+            penalty_constraint = [self.problem.penalty]
+            return constraints + hard_constraints + penalty_constraint, objectives
+
         for cons in self.problem.hard_constraints:
             value = self.evaluation_dict.get(cons)
 
