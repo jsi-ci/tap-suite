@@ -1,9 +1,9 @@
 import math
 import numpy as np
 
-from create_clothoids.clothoids.asymmetric_clothoid_spline \
+from tap.create_clothoids.clothoids.asymmetric_clothoid_spline \
     import create_asym_controlled_clothoid_curve
-from create_clothoids.clothoids.clothoid_spline_functions \
+from tap.create_clothoids.clothoids.clothoid_spline_functions \
     import calculate_heading_from_xy, calculate_intersection_between_point_angle_lines
 
 

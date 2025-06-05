@@ -1,5 +1,5 @@
 import numpy as np
-from create_clothoids.clothoids.clothoid_spline_functions import *
+from tap.create_clothoids.clothoids.clothoid_spline_functions import *
 
 
 def calculate_a(x0, y0, c0, x_t0, y_t0, s0, x_n0, y_n0, omega0, k0, n0, x1, c1, x_t1, s1, x_n1, omega1):

@@ -1,5 +1,5 @@
 import warnings
-from create_clothoids.clothoids.multiple_sequential_asymmetric_clothoid_spline \
+from tap.create_clothoids.clothoids.multiple_sequential_asymmetric_clothoid_spline \
     import create_clothoid_spline, create_clothoid_spline_from_mandatory_points_with_angles
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)

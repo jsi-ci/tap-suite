@@ -3,7 +3,7 @@ import numpy as np
 from scipy.signal import argrelextrema
 from scipy.spatial import KDTree
 
-from create_clothoids.clothoids import clothoids
+from tap.create_clothoids.clothoids import clothoids
 from tap import angle_manipulation as am
 
 

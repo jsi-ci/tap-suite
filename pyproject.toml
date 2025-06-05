@@ -35,11 +35,12 @@ classifiers = [
   "Programming Language :: Python"
 ]
 
-[tool.setuptools.dynamic]
-version = {attr = "tap.__version__"}
-
 [project.urls]
 Homepage = "https://github.com/jsi-ci/tap-suite"
 
-[tool.setuptools]
-packages = ["tap"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tap*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "tap.__version__"}

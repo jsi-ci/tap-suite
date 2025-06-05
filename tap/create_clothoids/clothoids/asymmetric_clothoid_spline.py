@@ -1,9 +1,9 @@
 import numpy as np
 
-from create_clothoids.clothoids.clothoid_spline_functions import *
-from create_clothoids.clothoids.asymmetric_clothoid_spline_functions \
+from tap.create_clothoids.clothoids.clothoid_spline_functions import *
+from tap.create_clothoids.clothoids.asymmetric_clothoid_spline_functions \
     import make_points_feasible, find_minimal_distance_parameters
-from create_clothoids.clothoids.clothoid_spline_functions import calculate_heading_from_xy
+from tap.create_clothoids.clothoids.clothoid_spline_functions import calculate_heading_from_xy
 
 
 def create_asym_controlled_clothoid_curve(original_points, tau, clothoid_point_step,
