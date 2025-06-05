@@ -1,4 +1,5 @@
 import json
+from importlib import resources
 import os
 
 from tap import TunnelAlignmentProblem, PymooProblem, JMetalProblem
@@ -30,12 +31,12 @@ def get_tap_300_problems(interface=None):
     "pymoo", "jmetalpy" or None (default). If None is specified, the problems are returned as
     TunnelAlignmentProblem objects."""
 
-    problem_layouts = os.listdir("tap/problems")
+    problem_layouts = resources.files("tap.problems").iterdir()
     suite_problems = []
     i = 1
     for layout in problem_layouts:
         for variant in ["CO", "CV", "AFO", "AFV", "AAO", "AAV"]:
-            suite_problems.append((f"TAP300-{i}", layout[:-5], variant))
+            suite_problems.append((f"TAP300-{i}", os.path.basename(layout)[:-5], variant))
             i += 1
 
     return _get_tap_problems(suite_problems, interface)
@@ -44,7 +45,9 @@ def get_tap_300_problems(interface=None):
 def _get_tap_problems(suite_problems, interface=None):
     suite = []
     for problem_name, layout, variant in suite_problems:
-        problem_data = json.load(open(f"tap/problems/{layout}.json"))
+        with resources.files("tap.problems").joinpath(f"{layout}.json").open("r") as f:
+            problem_data = json.load(f)
+
         problem = TunnelAlignmentProblem(problem_data, variant, problem_name=problem_name)
 
         if interface is None:

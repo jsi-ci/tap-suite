@@ -42,5 +42,11 @@ Homepage = "https://github.com/jsi-ci/tap-suite"
 where = ["."]
 include = ["tap*"]
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+tap = ["problems/*.json"]
+
 [tool.setuptools.dynamic]
 version = {attr = "tap.__version__"}
