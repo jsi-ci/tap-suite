@@ -28,21 +28,24 @@ class Solution:
         if self.problem.variant["order"] == "by_order":
             genotype = self.convert_to_order_by_variables(genotype)
 
-        if self.problem.variant["points"] == "points_and_angles":
-            # read the genotype and create two (horizontal and vertical) lists of points that store
-            # coordinates, angles, order, etc. of the points used to construct the clothoid
-            self.points_h, self.points_v = self.get_points(genotype, points="points_and_angles")
-            # construct the clothoid from the points
-            self.clothoid = self.create_clothoid(points="points_and_angles",
-                                                 order_h=genotype[-2], order_v=genotype[-1])
-        else:
-            # read the genotype and create two (horizontal and vertical) lists of points that store
-            # coordinates, angles, order, etc. of the points used to construct the clothoid.
-            # Additionally, create two lists of factors that store the factors between free points.
-            self.points_h, self.points_v, factors_h, factors_v = \
-                self.get_points(genotype, points="control_points")
-            self.clothoid = self.create_clothoid(points="control_points",
-                                                 factors_h=factors_h, factors_v=factors_v)
+        try:
+            if self.problem.variant["points"] == "points_and_angles":
+                # read the genotype and create two (horizontal and vertical) lists of points that store
+                # coordinates, angles, order, etc. of the points used to construct the clothoid
+                self.points_h, self.points_v = self.get_points(genotype, points="points_and_angles")
+                # construct the clothoid from the points
+                self.clothoid = self.create_clothoid(points="points_and_angles",
+                                                     order_h=genotype[-2], order_v=genotype[-1])
+            else:
+                # read the genotype and create two (horizontal and vertical) lists of points that store
+                # coordinates, angles, order, etc. of the points used to construct the clothoid.
+                # Additionally, create two lists of factors that store the factors between free points.
+                self.points_h, self.points_v, factors_h, factors_v = \
+                    self.get_points(genotype, points="control_points")
+                self.clothoid = self.create_clothoid(points="control_points",
+                                                     factors_h=factors_h, factors_v=factors_v)
+        except:
+            self.clothoid = None
 
         if self.clothoid is not None:
             self.complete_evaluation_dict()
