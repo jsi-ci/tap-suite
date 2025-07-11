@@ -421,12 +421,13 @@ class Solution:
             prev_point = point
             prev_angle = angle
             point = points[i]
-            angle_range = am.get_feasible_angle_range(
-                (point.coordinates[0], point.coordinates[1], point.angle, point.angle_range[0],
-                 point.angle_range[1]), prev_angle, prev_point.coordinates)
-            point.feasible_angles = angle_range  # just for visualization...
 
             if self.problem.variant.get("angles") == "factors":
+                angle_range = am.get_feasible_angle_range(
+                    (point.coordinates[0], point.coordinates[1], point.angle, point.angle_range[0],
+                     point.angle_range[1]), prev_angle, prev_point.coordinates)
+                point.feasible_angles = angle_range  # just for visualization...
+
                 angle = am.mod2pi(am.get_angle_from_range(angle_range[0], angle_range[1],
                                                           point.angle) + np.pi)
             else:
@@ -802,7 +803,7 @@ class Point:
             if alignment == "horizontal":
                 self.coordinates = [kwargs["x"], kwargs["y"]]
                 self.angle = kwargs["k_h"]
-                self.angle_range = [0, np.pi]
+                self.angle_range = [0, 2 * np.pi]
             elif alignment == "vertical":
                 self.coordinates = [kwargs["u"], kwargs["v"]]
                 self.angle = kwargs["k_v"]
