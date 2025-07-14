@@ -61,6 +61,10 @@ class Solution:
         n_v = min(math.floor(genotype[genotype_variables.index("n_v")]),
                   self.problem.max_vertical_turns)
 
+        if self.problem.variant["points"] == "control_points":
+            n_h = n_h + 1
+            n_v = n_v + 1
+
         new_genotype = []
         i, j = 0, 0
         n_h_count, n_v_count = 0, 0
