@@ -7,7 +7,7 @@ License: BSD 3-Clause, see LICENSE file.
 
 __author__ = "Nace Sever, Erik Dovgan, Tea Tusar"
 __license__ = "BSD 3-clause"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 from tap.problem import TunnelAlignmentProblem
 from tap.jmetalpy_problem import JMetalProblem

@@ -13,7 +13,7 @@ class TunnelAlignmentProblem:
         """ Initializes the problem from the given problem json file and the given
         variant. It can be in short string form: one of "AFV", "AFO", "AAV", "AAO", "CV" or "CO",
         or in dict form: {
-            "points": "points_and_angles" or "factors",
+            "points": "points_and_angles" or "control_points",
             "angles": "factor" or "absolute",
             "order": "by_variables" or "by_order",
         }. """
@@ -127,7 +127,6 @@ class TunnelAlignmentProblem:
             genotype += ["k_r", "phi", "a_h"] * self.num_given_points
             genotype += ["x", "y", "a_h", "order"] * self.num_free_points_h
             genotype += ["u", "v", "a_v", "order"] * self.num_free_points_v
-            genotype += ["order_h", "order_v"]
 
         elif points == "points_and_angles" and angles == "factors" and order == "by_order":
             genotype = ["k_r", "phi", "theta", "k_h", "k_v"] * 2
@@ -143,7 +142,6 @@ class TunnelAlignmentProblem:
             genotype += ["x", "y", "a_h"] * self.num_free_points_h
             genotype += ["u", "v", "a_v"] * self.num_free_points_v
             genotype += ["n_h", "n_v"]
-            genotype += ["order_h", "order_v"]
 
         elif points == "control_points" and order == "by_variables":
             genotype = ["k_r", "phi", "theta"] * 2
