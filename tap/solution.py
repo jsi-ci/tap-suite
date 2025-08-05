@@ -34,14 +34,14 @@ class Solution:
                 # coordinates, angles, order, etc. of the points used to construct the clothoid
                 self.points_h, self.points_v = self.get_points(genotype, points="points_and_angles")
 
-                # when the angles are given as absolute values, we always perform the alignment
-                # in the same direction, that is why we add two additional variables for order here
+                # construct the clothoid from the points.
+                # When using absolute angles order_h and order_v are always the same.
                 if self.problem.variant["angles"] == "absolute":
-                    genotype += [0, 0]
-
-                # construct the clothoid from the points
-                self.clothoid = self.create_clothoid(points="points_and_angles",
-                                                     order_h=genotype[-2], order_v=genotype[-1])
+                    self.clothoid = self.create_clothoid(points="points_and_angles",
+                                                         order_h=0, order_v=0)
+                else:
+                    self.clothoid = self.create_clothoid(points="points_and_angles",
+                                                         order_h=genotype[-2], order_v=genotype[-1])
             else:
                 # read the genotype and create two (horizontal and vertical) lists of points that store
                 # coordinates, angles, order, etc. of the points used to construct the clothoid.
