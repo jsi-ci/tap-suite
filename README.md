@@ -1,5 +1,5 @@
 # tap-suite
-This repository provides a suite of 12 benchmark problems for biobjective optimization, 
+This repository provides a suite of 15 benchmark problems for biobjective optimization, 
 reflecting real-world-like problem of finding the optimal tunnel route. 
 Problems in the suite have varying number of variables and are of different difficulty. 
 In addition to the given suite of problems, it is possible to generate custom problem instances.
@@ -30,7 +30,7 @@ problem.name, problem.id
 
 
 
-    ('TAP4', '15-areas_hor=1_ver=2_CV')
+    ('TAP4', '15-areas_hor=2_ver=1_AFO')
 
 
 
@@ -49,11 +49,11 @@ results = minimize(problem, algorithm, termination, verbose=True)
     ==========================================================================================
     n_gen  |  n_eval  | n_nds  |     cv_min    |     cv_avg    |      eps      |   indicator  
     ==========================================================================================
-         1 |      100 |      4 |  0.000000E+00 |  3.6479353710 |             - |             -
-         2 |      200 |      7 |  0.000000E+00 |  0.0591441885 |  0.0242239185 |         ideal
-         3 |      300 |      6 |  0.000000E+00 |  0.000000E+00 |  0.0183878428 |         ideal
-         4 |      400 |      6 |  0.000000E+00 |  0.000000E+00 |  0.0724697403 |         ideal
-         5 |      500 |      6 |  0.000000E+00 |  0.000000E+00 |  0.0973167994 |         ideal
+         1 |      100 |      6 |  0.000000E+00 |  4.3197488741 |             - |             -
+         2 |      200 |      6 |  0.000000E+00 |  1.5111012258 |  0.0273567306 |         ideal
+         3 |      300 |     11 |  0.000000E+00 |  0.000000E+00 |  0.1069783757 |         ideal
+         4 |      400 |     12 |  0.000000E+00 |  0.000000E+00 |  0.0658341935 |         ideal
+         5 |      500 |     12 |  0.000000E+00 |  0.000000E+00 |  0.0218910779 |         ideal
     
 
 
@@ -65,7 +65,7 @@ problem.ideal, problem.nadir
 
 
 
-    ([0, 0], [0.3018191170221708, 0.0003757249154668])
+    ([0, 0], [0.4418096766111498, 0.0010730414063434])
 
 
 
@@ -94,11 +94,11 @@ algorithm = NSGAII(
 algorithm.run()
 ```
 
-    [2025-05-22 11:07:32,827] [jmetal.core.algorithm] [DEBUG] Creating initial set of solutions...
-    [2025-05-22 11:07:32,829] [jmetal.core.algorithm] [DEBUG] Evaluating solutions...
-    [2025-05-22 11:07:36,332] [jmetal.core.algorithm] [DEBUG] Initializing progress...
-    [2025-05-22 11:07:36,333] [jmetal.core.algorithm] [DEBUG] Running main loop until termination criteria is met
-    [2025-05-22 11:07:48,901] [jmetal.core.algorithm] [DEBUG] Finished!
+    [2025-09-05 10:32:10,060] [jmetal.core.algorithm] [DEBUG] Creating initial set of solutions...
+    [2025-09-05 10:32:10,060] [jmetal.core.algorithm] [DEBUG] Evaluating solutions...
+    [2025-09-05 10:32:17,862] [jmetal.core.algorithm] [DEBUG] Initializing progress...
+    [2025-09-05 10:32:17,862] [jmetal.core.algorithm] [DEBUG] Running main loop until termination criteria is met
+    [2025-09-05 10:32:40,878] [jmetal.core.algorithm] [DEBUG] Finished!
     
 
 #### 1.C Run suite problems with other library/custom algorithm
@@ -173,7 +173,8 @@ The table below summarizes the characteristics of each frame:
 In this section we explain how to generate custom problem instances
 
 ```python
-problem = {} # Problem is represented as a python dictionary
+# Problem is represented as a python dictionary
+problem = {}
 ```
 
 Set the problem id and geometric constraints
