@@ -20,7 +20,7 @@ from tap import get_tap_suite
 
 
 ```python
-# get the list of 12 problems from the suite, wrapped in a class that support optimization with pymoo library
+# get the list of 15 problems from the suite, wrapped in a class that support optimization with pymoo library
 suite = get_tap_suite(interface="pymoo") 
 # pick one problem to optimize
 problem = suite[3]
