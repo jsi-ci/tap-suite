@@ -143,12 +143,12 @@ The table below summarizes the characteristics of each frame:
 
 | frame          | Number of Layouts | Dimension Range |
 |----------------|-------------------|-----------------|
-| u-turn         | 6                 | 12-24           |
-| next-to-tunnel | 10                | 12-36           |
+| u-turn         | 6                 | 10-24           |
+| next-to-tunnel | 10                | 10-36           |
 | lr-ud          | 8                 | 18-36           |
 | loop           | 6                 | 21-36           |
-| left-right     | 10                | 12-28           |
-| 15-areas       | 10                | 12-32           |
+| left-right     | 10                | 10-28           |
+| 15-areas       | 10                | 10-32           |
 
 #### u-turn
 ![png](README_files/u-turn.png)
