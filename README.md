@@ -78,7 +78,7 @@ from jmetal.operator.crossover import SBXCrossover
 from jmetal.operator.mutation import PolynomialMutation
 from jmetal.util.termination_criterion import StoppingByEvaluations
 
-# get the list of 12 problems from the suite, wrapped in a class that support optimization with jmetalpy library
+# get the list of 15 problems from the suite, wrapped in a class that support optimization with jmetalpy library
 suite = get_tap_suite(interface="jmetalpy")
 problem = suite[3]
 
@@ -125,7 +125,7 @@ class CustomProblem:
 
 
 ```python
-# get the suite of 12 problems and wrap them with the defined class
+# get the suite of 15 problems and wrap them with the defined class
 suite = get_tap_suite()
 custom_suite = [CustomProblem(p) for p in suite]
 ```
